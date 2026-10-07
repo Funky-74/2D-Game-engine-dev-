@@ -112,10 +112,19 @@ public class PlayerController : MonoBehaviour
             
     }
 
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.tag=="Checkpoint")
+        {
+            lastPosition = collision.transform.position;
+            collision.gameObject.GetComponent<Checkpoint>().Hit();
+        }
+    }
+
     public void AddPresent()
     {
         presentsCollected++;
-        uiManager.setScore(presentsCollected);
+        //uiManager.setScore(presentsCollected);
     }
 
     public void AddHeart()

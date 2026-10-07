@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Present
   - EnemyProjectile
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
