@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4055223380657134100}
   - component: {fileID: 6659509196698339477}
   - component: {fileID: 2591949338188182202}
-  - component: {fileID: -7673254954799998437}
+  - component: {fileID: 1484126739136907325}
   - component: {fileID: 9148769890071055764}
   m_Layer: 10
   m_Name: EnemySnowball
@@ -121,8 +121,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &-7673254954799998437
-BoxCollider2D:
+--- !u!58 &1484126739136907325
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -156,17 +156,7 @@ BoxCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.49830508, y: 0.5}
-    newSize: {x: 0.49830508, y: 0.5}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.49830508, y: 0.5}
-  m_EdgeRadius: 0
+  m_Radius: 0.25
 --- !u!114 &9148769890071055764
 MonoBehaviour:
   m_ObjectHideFlags: 0
