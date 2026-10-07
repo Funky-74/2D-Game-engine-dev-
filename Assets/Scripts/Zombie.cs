@@ -63,6 +63,7 @@ public class Zombie : MonoBehaviour
             }
         }
         fireCountdown += Time.fixedDeltaTime;
+
     }
 
     private void Fire()
