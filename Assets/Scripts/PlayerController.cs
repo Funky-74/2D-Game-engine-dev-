@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,15 +20,24 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private UIManager uiManager;
     private int lives = 3;
-    private Vector2 lastPosition;
+    private Vector2 lastCheckpoint;
+    //for invincibility
+    private float invincibilityTime = 3.0f;
+    private float invincibilityCount = 0f;
+    public bool isInvin = false;
+    private AudioSource audio;
+    private bool isPlaying = false;
+    [SerializeField] private AudioClip collectClip;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        audio = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         jumpCount = jumpCountBase;
-        lastPosition = rb.position;
+        lastCheckpoint = rb.transform.position;
     }
 
     private void Fire()
@@ -56,6 +66,29 @@ public class PlayerController : MonoBehaviour
             Fire();
         }
 
+        if(move.x!=0 && jumpCount == 0 && !isPlaying)
+        {
+            audio.Play();
+            isPlaying = true;
+        }
+        if(isPlaying && (jumpCount>0 || move.x==0))
+        {
+            audio.Pause();
+            isPlaying = false;
+        }
+
+
+        if(isInvin)
+        {
+            invincibilityCount += Time.deltaTime;
+            if(invincibilityCount> invincibilityTime)
+            {
+                isInvin = false;
+                invincibilityCount = 0;
+                this.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1f);
+            }
+        }
+
         if (move.x != 0)
         {
             direction = move.x < 0 ? 1 : -1;
@@ -77,17 +110,55 @@ public class PlayerController : MonoBehaviour
         {
             jumpCount = jumpCountBase;
         }
+        else if(collision.gameObject.tag=="EnemyProjectile" && !isInvin)
+        {
+            rb.linearVelocity = Vector2.zero;
+            PlayerHit();
+        }
+        else if (collision.gameObject.tag == "EnemyProjectile" && isInvin)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+
+    }
+
+    private void PlayerHit()
+    {
+        lives--;
+        uiManager.setLives(lives);
+        //rb.transform.position = lastCheckpoint;
+        if (lives == 0)
+        {
+            SceneManager.LoadScene("SampleScene");
+
+        }
+        isInvin = true;
+        this.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
     }
 
     public void AddPresent()
     {
+        if(isPlaying)
+        {
+            audio.Pause();
+        }
+
+        audio.PlayOneShot(collectClip);
+        if(isPlaying)
+        {
+            audio.Play();
+        }
         presentsCollected++;
+        if(score==4)
+        {
+            //create win scene which is then loaded here after the conition is met (made the same way as menu scene)
+        }
         uiManager.setScore(presentsCollected);
     }
 
 
     public void reachCheckpoint()
     {
-        lastPosition = rb.transform.position;
+        lastCheckpoint = rb.transform.position;
     }
 }

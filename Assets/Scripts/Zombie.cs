@@ -14,6 +14,9 @@ public class Zombie : MonoBehaviour
     [SerializeField] private float FireTimer = 0.5f;
     [SerializeField] private GameObject projectile;
     private float fireCountdown;
+    private AudioSource audio;
+    private int strength = 3;
+    //public bool isInvincible = false;
 
 
 
@@ -23,6 +26,7 @@ public class Zombie : MonoBehaviour
         animator = GetComponent<Animator>();
         animator.SetFloat("Direction", direction);
         animator.SetFloat("Move", direction);
+        audio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -39,6 +43,7 @@ public class Zombie : MonoBehaviour
             isWalking = true;
             elapsedTime = 0;
             direction *= -1;
+            audio.Play();
             animator.SetFloat("Direction", direction);
             animator.SetFloat("Move", direction);
         }
@@ -47,6 +52,7 @@ public class Zombie : MonoBehaviour
             isWalking = false;
             elapsedTime = 0;
             animator.SetFloat("Move", 0);
+            audio.Pause();
         }
 
         elapsedTime += Time.deltaTime;
@@ -66,6 +72,34 @@ public class Zombie : MonoBehaviour
 
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.GetComponent<Projectile>() != null)
+        {
+            rb.linearVelocity = new Vector2(0,0);
+            hit();
+        }
+    }
+
+    private void hit()
+    {
+        //if(!isInvincible)
+        //{
+            strength--;
+
+            if(strength<=0)
+            {
+                Destroy(this.gameObject);
+                return;
+
+            }
+
+            //isInvincible = true;
+            //this.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+        //}
+    }
+
+
     private void Fire()
     {
         if (fireCountdown > FireTimer)
@@ -76,6 +110,7 @@ public class Zombie : MonoBehaviour
             fireCountdown = 0;
         }
     }
+
 
 
 
